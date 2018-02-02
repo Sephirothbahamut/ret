@@ -1,4 +1,4 @@
-var request = require("request");
+var rp = require("request-promise");
 
 
 const fetch = require('node-fetch')
@@ -24,41 +24,21 @@ function check(url, invocationParameters,  expectedResultData, expectedResultSta
 	//console.log("Request url: '" + request_url + "'");
 	
 	//send request
-	request.get(
-		//options
-		{
-		url: request_url,
-		json: true,
-		headers: {"User-Agent": "request"}
-		},
-		//callback
-		(err, res, data) =>
-			{
-			//if(err) //cit "non state li’ a gestire i casi non validi, basta che processiate correttamente una chiamata in questo formato)"
-			//	{}
-			
+	return rp({method: "GET", url: request_url, json: true, resolveWithFullResponse: true}).then(
+		(res) =>
+			{//evaluate response to send back
 			const checkResult = 
 				{ // this is the object you need to set and return
 				urlChecked: url,
-				resultData: data,
+				resultData: res.body,
 				resultStatus: res.statusCode,
 				statusTestPassed: (res.statusCode == expectedResultStatus),
-				resultDataAsExpected: compareResults(data, expectedResultData)
-				}
-			console.log(checkResult);
+				resultDataAsExpected: compareResults(res.body, expectedResultData)
+				};
+			//console.log(checkResult);
+			return(checkResult);
 			}
 		);
-	
-	
-    /*const checkResult = { // this is the object you need to set and return
-        urlChecked: url,
-        resultData: null,
-        resultStatus: null,
-        statusTestPassed: null,
-        resultDataAsExpected: null
-    }*/
-
-
 
 }
 
