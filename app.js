@@ -18,7 +18,6 @@ app.get('/count',function (req, res) {
 })
 
 app.post('/check',function (req, res) {
-	res.send(req.body);
 	checker(
 		req.body["url"],					//url
 		req.body["invocationParameters"],	//invocationParameters
